@@ -38,8 +38,8 @@ class UserController extends Controller
     public function storeUser(StoreUserRequest $request)
     {
         $user = User::create([
-            'name' =>$request->name,
-            'email' =>$request->email,
+            'name' =>$request->input("name"),
+            'email' =>$request->input('email'),
             'password' =>Hash::make( $request->password),
         ]);
         try{
@@ -110,7 +110,7 @@ class UserController extends Controller
             'success' => true,
             'message' => 'User deleted successfully.'
         ], 200);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         // Log error để debug nếu cần
         \Log::error('Failed to delete user: '.$e->getMessage());
 
