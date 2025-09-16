@@ -159,42 +159,18 @@ class UserController extends Controller
             $user = User::withTrashed()->findOrFail($idUser);
             $this->userService->forceDeleteUser($user);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User deleted successfully.',
-            ]);
-        }catch(Exception $e){
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function restore(Request $request, int $idUser){
-        try{
-            $user = $this->userService->restoreUser($idUser);
-
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User not found in trash'
-                ], 404);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'User restored successfully',
-                'data' => new UserResource($user->load('role'))
-            ]);
-
-        }catch(Exception $e){
-            return response()->json([
+        return response()->json([
             'success' => true,
-            'message' => 'Failded restore user',
-            'error' => $e->getMessage(),
-            ],500);
-        }
-    }
+            'message' => 'User deleted successfully.'
+        ], 200);
+    } catch (\Exception $e) {
+        // Log error để debug nếu cần
+        \Log::error('Failed to delete user: '.$e->getMessage());
 
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete user. Please try again later.'
+        ], 500);
+    }
+    }
 }

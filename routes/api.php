@@ -5,4 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
 
-    Route::apiResource('users', UserController::class);
+
+Route::post('/users/store', [UserController::class , 'storeUser']);
+
+Route::get('/users', [UserController::class, 'getUser']);
