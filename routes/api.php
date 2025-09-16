@@ -1,9 +1,8 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
 
-Route::post('/users', [UserController::class , 'storeUser']);
-
-Route::get('/users', [UserController::class, 'getUser']);
-
-Route::delete('/users/{user}', [UserController::class, 'destroy']);
+    Route::apiResource('users', UserController::class);
