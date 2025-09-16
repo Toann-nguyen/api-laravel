@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
+use App\Models\Post;
 use App\Models\User;
 use App\Services\UserService;
 use Exception;
@@ -35,47 +36,42 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-       try{
-            $filters = $request->all() ? $request->all() : [];
-            dd($filters);
-            $page = $request->get('per_page', 15);
-            $includeTrashed = $request->boolean('include_trashed' , false);
-
-            $users = $this->userService->getAllUser($filters, $page, $includeTrashed);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'User retrieved successlly',
-                'data' => new UserCollection($users),
-            ]);
-       }catch(Exception $e){
-         return response()->json([
+        return response()->json([
             'success' => true,
-            'message' => 'cant not get all user',
-            'data' => $e->getMessage(),
-         ], 500);
-       }
+            'message' => 'Users retrieved successfully.',
+            'data' => User::all(),
+        ]);
+
     }
+
     /**
      *
      */
-    public function store(StoreUserRequest $storeUserRequest)
+    public function store(Request $storeUserRequest )
     {
         try{
-            $user = $this->userService->createUser($storeUserRequest->validation());
-
-            return response()->json([
-                'success' => true,
-                'message' => 'User created successlly',
-                'data' => new UserCollection($user),
-            ]);
+            dd($storeUserRequest->all());
+            $user = User::create([
+            'name' => $storeUserRequest['name'],
+            'email' => $storeUserRequest['email'],
+            'phone' => $storeUserRequest['phone'],
+            'role_id' => $storeUserRequest['role_id'],
+            'status' => $storeUserRequest['status'],
+            'password' => $storeUserRequest['password'],
+        ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'User registered successfully',
+            'data' => $user,
+        ], 201);
         }catch(Exception $e){
             return response()->json([
-                'success' =>false,
-                'message' => 'Failed to create user',
+                'success' => false,
+                'message' => 'Failed to register user. Please try again later.',
                 'error' => $e->getMessage(),
             ], 500);
         }
+
     }
 
     /**
@@ -89,6 +85,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
 
     /**
      * Display the specified resource.
